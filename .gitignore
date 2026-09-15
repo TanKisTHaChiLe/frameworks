@@ -1,0 +1,22 @@
+# Виртуальное окружение
+.venv/
+venv/
+
+# Кэш и служебные файлы Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+
+# IDE
+.idea/
+.vscode/
+
+# macOS
+.DS_Store
+
+# Исходная методичка (не является частью приложения)
+ПР1_Base_Python_кор (2).pdf
+
+# Локальные настройки и секреты
+.env

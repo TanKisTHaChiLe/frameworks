@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "course_id": 1,
+    "title": "Основы Python",
+    "category": "practice",
+    "publication_year": 2026,
+    "is_published": true,
+    "min_study_year": 1
+  },
+  {
+    "id": 2,
+    "course_id": 1,
+    "title": "Коллекции, функции и циклы",
+    "category": "lecture",
+    "publication_year": 2026,
+    "is_published": true,
+    "min_study_year": 2
+  },
+  {
+    "id": 3,
+    "course_id": 1,
+    "title": "Подготовка к экзамену по Python",
+    "category": "exam",
+    "publication_year": 2026,
+    "is_published": true,
+    "min_study_year": 3
+  },
+  {
+    "id": 4,
+    "course_id": 2,
+    "title": "Алгоритмы сортировки",
+    "category": "lecture",
+    "publication_year": 2025,
+    "is_published": true,
+    "min_study_year": 1
+  },
+  {
+    "id": 5,
+    "course_id": 3,
+    "title": "Устаревший практикум",
+    "category": "practice",
+    "publication_year": 2024,
+    "is_published": false,
+    "min_study_year": 1
+  }
+]

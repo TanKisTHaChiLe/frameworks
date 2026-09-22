@@ -2,6 +2,7 @@
 
 import pytest
 
+from categories import Category
 from courses import Course
 from materials import (
     Material,
@@ -67,3 +68,12 @@ def test_material_has_course_object_and_readable_string():
     material = make_materials()[0]
     assert isinstance(material.course, Course)
     assert "Основы Python | Python" in str(material)
+
+
+def test_material_category_is_an_enum_and_accepts_normalized_codes():
+    course = Course(1, "Python", True)
+    material = Material(1, course, "Лекция", " LECTURE ", 2026)
+    assert material.category is Category.LECTURE
+    assert material.to_dict()["category"] == "lecture"
+    exam = Material(2, course, "Экзамен", Category.EXAM, 2026)
+    assert exam.category is Category.EXAM

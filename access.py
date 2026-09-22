@@ -1,5 +1,6 @@
 """Rules for student access to educational materials."""
 
+from categories import Category
 from courses import Course
 from materials import Material
 
@@ -35,15 +36,10 @@ def get_access_level(study_year: int) -> str:
 
 def get_category_name(category_code: str) -> str:
     """Convert a category code into a readable Russian name."""
-    category_names = {
-        "lecture": "Лекция",
-        "practice": "Практическая работа",
-        "exam": "Материал для подготовки к экзамену",
-    }
-    return category_names.get(
-        category_code.strip().lower(),
-        "Неизвестная категория",
-    )
+    try:
+        return Category.from_code(category_code).label
+    except ValueError:
+        return "Неизвестная категория"
 
 
 def check_material_access(
@@ -61,7 +57,8 @@ def check_material_access(
         return "Отказано: курс завершён или неактивен."
     if not is_published:
         return "Отказано: материал ещё не опубликован."
-    if category_code.strip().lower() == "exam" and access_level != "полный":
+    is_exam = category_code.strip().lower() == Category.EXAM.value
+    if is_exam and access_level != "полный":
         return "Отказано: материал этой категории доступен с 3-го курса."
     return "Доступ разрешён."
 

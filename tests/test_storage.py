@@ -4,6 +4,7 @@ import json
 
 import pytest
 
+from categories import Category
 from courses import Course
 from materials import Material
 from storage import (
@@ -45,6 +46,7 @@ def test_models_round_trip_and_restore_course_identity(tmp_path):
     loaded_materials = load_materials(materials_file, loaded_courses)
     assert isinstance(loaded_courses[0], Course)
     assert isinstance(loaded_materials[0], Material)
+    assert loaded_materials[0].category is Category.LECTURE
     assert loaded_materials[0].course is loaded_courses[0]
     assert loaded_materials[0].to_dict() == material.to_dict()
 

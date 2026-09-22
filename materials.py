@@ -1,12 +1,13 @@
 """Educational material model and collection operations."""
 
 from datetime import date
-from typing import Dict, Iterator, List
+from typing import Dict, Iterator, List, Union
 
+from categories import Category
 from courses import Course
 
 
-VALID_CATEGORIES = {"lecture", "practice", "exam"}
+VALID_CATEGORIES = {category.value for category in Category}
 
 
 def get_material_age(publication_year: int, current_year: int) -> int:
@@ -18,16 +19,15 @@ class Material:
     """A publication belonging to a course with its own access rules."""
 
     def __init__(
-        self, material_id: int, course: Course, title: str, category: str,
+        self, material_id: int, course: Course, title: str,
+        category: Union[str, Category],
         publication_year: int, is_published: bool = False,
         min_study_year: int = 1,
     ) -> None:
         normalized_title = title.strip()
-        normalized_category = category.strip().lower()
+        normalized_category = Category.from_code(category)
         if not normalized_title:
             raise ValueError("название не может быть пустым")
-        if normalized_category not in VALID_CATEGORIES:
-            raise ValueError("неизвестная категория")
         if publication_year < 1900 or publication_year > 2100:
             raise ValueError("некорректный год публикации")
         if min_study_year < 1 or min_study_year > 6:
@@ -44,7 +44,7 @@ class Material:
         publication = "опубликован" if self.is_published else "черновик"
         return (
             f"{self.id}. {self.title} | {self.course.name} | "
-            f"{self.category} | {self.publication_year} | {publication}"
+            f"{self.category.value} | {self.publication_year} | {publication}"
         )
 
     @classmethod
@@ -62,7 +62,7 @@ class Material:
             "id": self.id,
             "course_id": self.course.id,
             "title": self.title,
-            "category": self.category,
+            "category": self.category.value,
             "publication_year": self.publication_year,
             "is_published": self.is_published,
             "min_study_year": self.min_study_year,
@@ -90,7 +90,8 @@ class Material:
 
 
 def add_material(
-    materials: List[Material], course: Course, title: str, category: str,
+    materials: List[Material], course: Course, title: str,
+    category: Union[str, Category],
     publication_year: int, is_published: bool = False,
     min_study_year: int = 1,
 ) -> Material:
@@ -125,7 +126,7 @@ def iter_materials_by_category(
     """Yield materials from one category."""
     normalized_category = category.strip().lower()
     for material in materials:
-        if material.category == normalized_category:
+        if material.category.value == normalized_category:
             yield material
 
 

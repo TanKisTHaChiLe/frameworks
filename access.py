@@ -1,6 +1,27 @@
 """Rules for student access to educational materials."""
 
-from typing import Any, Dict
+from courses import Course
+from materials import Material
+
+
+class Student:
+    """A student checking access to course materials."""
+
+    def __init__(self, name: str, study_year: int) -> None:
+        self.name = name.strip()
+        self.study_year = study_year
+
+    def __str__(self) -> str:
+        return f"{self.name} ({self.study_year}-й курс)"
+
+    @property
+    def access_level(self) -> str:
+        """Return the level implied by the student's year."""
+        return get_access_level(self.study_year)
+
+    def check_access(self, material: Material) -> str:
+        """Ask a material to evaluate its own access rules."""
+        return material.access_result(self.study_year)
 
 
 def get_access_level(study_year: int) -> str:
@@ -47,21 +68,10 @@ def check_material_access(
 
 def check_access_to_material(
     study_year: int,
-    course: Dict[str, Any],
-    material: Dict[str, Any],
+    course: Course,
+    material: Material,
 ) -> str:
-    """Check access to a material represented by project dictionaries."""
-    basic_result = check_material_access(
-        study_year,
-        course["is_active"],
-        material["is_published"],
-        material["category"],
-    )
-    if basic_result != "Доступ разрешён.":
-        return basic_result
-    if study_year < material.get("min_study_year", 1):
-        return (
-            "Отказано: материал доступен студентам начиная с "
-            f'{material["min_study_year"]}-го курса.'
-        )
-    return basic_result
+    """Compatibility function for a material linked to its course."""
+    if material.course is not course:
+        raise ValueError("материал относится к другому курсу")
+    return material.access_result(study_year)

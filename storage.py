@@ -4,6 +4,9 @@ import json
 from pathlib import Path
 from typing import Any, Dict, List
 
+from courses import Course, find_course
+from materials import Material
+
 
 class DataFileError(Exception):
     """Raised when application data cannot be loaded or saved."""
@@ -37,21 +40,35 @@ def save_collection(filename: Path, items: List[Dict[str, Any]]) -> None:
         raise DataFileError(f"не удалось сохранить файл {filename}") from error
 
 
-def load_courses(filename: Path) -> List[Dict[str, Any]]:
+def load_courses(filename: Path) -> List[Course]:
     """Load courses from a JSON file."""
-    return load_collection(filename)
+    try:
+        return [Course.from_dict(data) for data in load_collection(filename)]
+    except (KeyError, TypeError, ValueError) as error:
+        raise DataFileError(f"некорректные данные курса в {filename}") from error
 
 
-def save_courses(filename: Path, courses: List[Dict[str, Any]]) -> None:
+def save_courses(filename: Path, courses: List[Course]) -> None:
     """Save courses to a JSON file."""
-    save_collection(filename, courses)
+    save_collection(filename, [course.to_dict() for course in courses])
 
 
-def load_materials(filename: Path) -> List[Dict[str, Any]]:
+def load_materials(filename: Path, courses: List[Course]) -> List[Material]:
     """Load educational materials from a JSON file."""
-    return load_collection(filename)
+    materials = []
+    for data in load_collection(filename):
+        try:
+            course = find_course(courses, data["course_id"])
+            if course is None:
+                raise ValueError("неизвестный курс")
+            materials.append(Material.from_dict(data, course))
+        except (KeyError, TypeError, ValueError) as error:
+            raise DataFileError(
+                f"некорректные данные материала в {filename}: {error}"
+            ) from error
+    return materials
 
 
-def save_materials(filename: Path, materials: List[Dict[str, Any]]) -> None:
+def save_materials(filename: Path, materials: List[Material]) -> None:
     """Save educational materials to a JSON file."""
-    save_collection(filename, materials)
+    save_collection(filename, [material.to_dict() for material in materials])

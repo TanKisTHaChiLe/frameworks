@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "course_id": 1,
+    "name": "Анна Иванова",
+    "study_year": 1
+  },
+  {
+    "id": 2,
+    "course_id": 1,
+    "name": "Иван Петров",
+    "study_year": 3
+  },
+  {
+    "id": 3,
+    "course_id": 2,
+    "name": "Мария Смирнова",
+    "study_year": 2
+  },
+  {
+    "id": 4,
+    "course_id": 3,
+    "name": "Алексей Сидоров",
+    "study_year": 4
+  }
+]

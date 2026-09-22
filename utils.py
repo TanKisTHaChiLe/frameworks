@@ -1,4 +1,4 @@
-"""Safe console input helpers."""
+"""Вспомогательные функции для безопасного ввода в консоли."""
 
 from typing import Optional
 
@@ -8,7 +8,7 @@ def input_int(
     minimum: Optional[int] = None,
     maximum: Optional[int] = None,
 ) -> int:
-    """Read an integer within optional bounds, retrying invalid input."""
+    """Прочитать целое число в заданных границах, повторяя ввод при ошибке."""
     while True:
         try:
             value = int(input(prompt))
@@ -26,7 +26,7 @@ def input_int(
 
 
 def input_non_empty(prompt: str) -> str:
-    """Read a non-empty text value."""
+    """Прочитать непустое текстовое значение."""
     while True:
         value = input(prompt).strip()
         if value:
@@ -35,7 +35,7 @@ def input_non_empty(prompt: str) -> str:
 
 
 def input_yes_no(prompt: str) -> bool:
-    """Read a yes/no answer in Russian or English."""
+    """Прочитать ответ «да» или «нет» на русском или английском языке."""
     positive_answers = {"да", "д", "yes", "y"}
     negative_answers = {"нет", "н", "no", "n"}
     while True:

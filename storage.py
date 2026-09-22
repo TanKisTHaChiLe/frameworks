@@ -1,19 +1,20 @@
-"""JSON persistence for courses and educational materials."""
+"""Хранение курсов, материалов и студентов в JSON."""
 
 import json
 from pathlib import Path
 from typing import Any, Dict, List
 
-from courses import Course, find_course
-from materials import Material
+from models.access import Student
+from models.courses import Course, find_course
+from models.materials import Material
 
 
 class DataFileError(Exception):
-    """Raised when application data cannot be loaded or saved."""
+    """Ошибка загрузки или сохранения данных приложения."""
 
 
 def load_collection(filename: Path) -> List[Dict[str, Any]]:
-    """Load a list of dictionaries from a JSON file."""
+    """Загрузить список словарей из файла JSON."""
     try:
         with filename.open("r", encoding="utf-8") as file:
             data = json.load(file)
@@ -30,7 +31,7 @@ def load_collection(filename: Path) -> List[Dict[str, Any]]:
 
 
 def save_collection(filename: Path, items: List[Dict[str, Any]]) -> None:
-    """Save a collection to JSON using a context manager."""
+    """Сохранить коллекцию в JSON с помощью контекстного менеджера."""
     try:
         filename.parent.mkdir(parents=True, exist_ok=True)
         with filename.open("w", encoding="utf-8") as file:
@@ -41,7 +42,7 @@ def save_collection(filename: Path, items: List[Dict[str, Any]]) -> None:
 
 
 def load_courses(filename: Path) -> List[Course]:
-    """Load courses from a JSON file."""
+    """Загрузить курсы из файла JSON."""
     try:
         return [Course.from_dict(data) for data in load_collection(filename)]
     except (KeyError, TypeError, ValueError) as error:
@@ -49,12 +50,12 @@ def load_courses(filename: Path) -> List[Course]:
 
 
 def save_courses(filename: Path, courses: List[Course]) -> None:
-    """Save courses to a JSON file."""
+    """Сохранить курсы в файл JSON."""
     save_collection(filename, [course.to_dict() for course in courses])
 
 
 def load_materials(filename: Path, courses: List[Course]) -> List[Material]:
-    """Load educational materials from a JSON file."""
+    """Загрузить учебные материалы из файла JSON."""
     materials = []
     for data in load_collection(filename):
         try:
@@ -70,5 +71,26 @@ def load_materials(filename: Path, courses: List[Course]) -> List[Material]:
 
 
 def save_materials(filename: Path, materials: List[Material]) -> None:
-    """Save educational materials to a JSON file."""
+    """Сохранить учебные материалы в файл JSON."""
     save_collection(filename, [material.to_dict() for material in materials])
+
+
+def load_students(filename: Path, courses: List[Course]) -> List[Student]:
+    """Загрузить студентов и связать каждого с его курсом."""
+    students = []
+    for data in load_collection(filename):
+        try:
+            course = find_course(courses, data["course_id"])
+            if course is None:
+                raise ValueError("неизвестный курс")
+            students.append(Student.from_dict(data, course))
+        except (KeyError, TypeError, ValueError) as error:
+            raise DataFileError(
+                f"некорректные данные студента в {filename}: {error}"
+            ) from error
+    return students
+
+
+def save_students(filename: Path, students: List[Student]) -> None:
+    """Сохранить студентов в файл JSON."""
+    save_collection(filename, [student.to_dict() for student in students])

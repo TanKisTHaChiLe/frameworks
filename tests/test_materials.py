@@ -1,9 +1,10 @@
-"""Tests for educational material collection functions."""
+"""Тесты функций для работы с коллекцией учебных материалов."""
 
 import pytest
 
-from courses import Course
-from materials import (
+from models.categories import Category
+from models.courses import Course
+from models.materials import (
     Material,
     add_material,
     delete_material,
@@ -14,7 +15,7 @@ from materials import (
 
 
 def make_materials():
-    """Return an isolated collection used by tests."""
+    """Создать отдельную коллекцию материалов для теста."""
     course = Course(1, "Python", True)
     return [
         Material(1, course, "Основы Python", "practice", 2025, True, 1),
@@ -67,3 +68,12 @@ def test_material_has_course_object_and_readable_string():
     material = make_materials()[0]
     assert isinstance(material.course, Course)
     assert "Основы Python | Python" in str(material)
+
+
+def test_material_category_is_an_enum_and_accepts_normalized_codes():
+    course = Course(1, "Python", True)
+    material = Material(1, course, "Лекция", " LECTURE ", 2026)
+    assert material.category is Category.LECTURE
+    assert material.to_dict()["category"] == "lecture"
+    exam = Material(2, course, "Экзамен", Category.EXAM, 2026)
+    assert exam.category is Category.EXAM

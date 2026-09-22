@@ -38,7 +38,7 @@
   {
     "id": 5,
     "course_id": 3,
-    "title": "Устаревший практикум",
+    "title": "Практикум по машинному обучению",
     "category": "practice",
     "publication_year": 2024,
     "is_published": false,

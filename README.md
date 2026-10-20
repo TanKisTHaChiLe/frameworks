@@ -75,6 +75,9 @@ python3 -m db.import_json
 - `data/` — JSON-файлы и база `learning_portal.sqlite`;
 - `tests/` — тесты;
 - `pr3-lanets.md` — отчёт по ПР3.
+- [pr5-lanets.md](pr5-lanets.md) — отчёт по ПР5: Django, HTTP и маршрутизация;
+- [pr6-lanets.md](pr6-lanets.md) — отчёт по ПР6: шаблоны и статические файлы;
+- [pr7-lanets.md](pr7-lanets.md) — отчёт по ПР7: SQLite и SQL.
 
 ## Запуск и проверка
 

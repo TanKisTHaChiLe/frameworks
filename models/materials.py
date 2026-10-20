@@ -1,7 +1,7 @@
 """Модель учебного материала и операции с коллекцией материалов."""
 
 from datetime import date
-from typing import Dict, Iterator, List, Union
+from typing import Dict, Iterator, List, Optional, Union
 
 from models.categories import Category
 from models.courses import Course
@@ -120,6 +120,13 @@ def find_materials(materials: List[Material], query: str) -> List[Material]:
     """Найти материалы, названия которых содержат заданный текст."""
     normalized_query = query.strip().lower()
     return [item for item in materials if normalized_query in item.title.lower()]
+
+
+def find_material_by_id(
+    materials: List[Material], material_id: int,
+) -> Optional[Material]:
+    """Найти учебный материал по идентификатору."""
+    return next((item for item in materials if item.id == material_id), None)
 
 
 def iter_materials_by_category(

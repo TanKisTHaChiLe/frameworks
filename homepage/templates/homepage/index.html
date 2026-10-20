@@ -1,0 +1,13 @@
+{% extends "homepage/base.html" %}
+
+{% block content %}
+<section class="hero p-5 rounded-3">
+  <p class="text-uppercase small fw-semibold text-primary">Учебная платформа</p>
+  <h1>Система учёта учебных материалов</h1>
+  <p class="lead">Курсы, материалы и правила доступа студентов в одном месте.</p>
+  <a class="btn btn-primary" href="{% url 'courses:list' %}">Открыть курсы</a>
+  <a class="btn btn-outline-primary" href="{% url 'materials:list' %}">
+    Все материалы
+  </a>
+</section>
+{% endblock %}

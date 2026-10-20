@@ -1,0 +1,16 @@
+<div class="col-md-6 col-lg-4">
+  <article class="card h-100 course-card">
+    <div class="card-body">
+      <span class="badge {% if course.is_active %}text-bg-success{% else %}text-bg-secondary{% endif %}">
+        {% if course.is_active %}активен{% else %}завершён{% endif %}
+      </span>
+      <h2 class="h5 mt-3">{{ course.name }}</h2>
+      <p class="text-secondary mb-3">
+        Материалов: {{ course.materials|length }} · студентов: {{ course.students|length }}
+      </p>
+      <a class="stretched-link" href="{% url 'courses:detail' course.id %}">
+        Открыть курс
+      </a>
+    </div>
+  </article>
+</div>

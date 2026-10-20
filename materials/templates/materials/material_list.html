@@ -1,0 +1,17 @@
+{% extends "homepage/base.html" %}
+
+{% block title %}Материалы{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-end mb-4">
+  <div><p class="eyebrow">Библиотека</p><h1 class="mb-0">Учебные материалы</h1></div>
+  <span class="text-secondary">Всего: {{ materials|length }}</span>
+</div>
+<div class="row g-3">
+  {% for material in materials %}
+    {% include "materials/includes/material_card.html" %}
+  {% empty %}
+    <p>Материалы пока не добавлены.</p>
+  {% endfor %}
+</div>
+{% endblock %}

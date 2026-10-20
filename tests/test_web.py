@@ -3,7 +3,9 @@
 import os
 
 import django
+from django.contrib.staticfiles import finders
 from django.test import Client
+from django.urls import reverse
 
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "learning_portal.settings")
@@ -26,3 +28,11 @@ def test_missing_objects_return_404():
     client = Client()
     assert client.get("/courses/999/").status_code == 404
     assert client.get("/materials/999/").status_code == 404
+
+
+def test_named_routes_and_static_files_are_configured():
+    assert reverse("homepage:index") == "/"
+    assert reverse("courses:detail", args=[1]) == "/courses/1/"
+    assert reverse("materials:list") == "/materials/"
+    assert finders.find("css/style.css") is not None
+    assert finders.find("js/main.js") is not None

@@ -1,0 +1,47 @@
+:root {
+  --page-bg: #f5f7fb;
+  --card-border: #dfe5ef;
+  --accent: #3157d5;
+}
+
+body {
+  background: var(--page-bg);
+  color: #182033;
+  min-height: 100vh;
+}
+
+.hero {
+  background: linear-gradient(135deg, #e9efff, #fff);
+  border: 1px solid var(--card-border);
+}
+
+.eyebrow {
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.course-card,
+.material-card,
+.detail-card {
+  border-color: var(--card-border);
+  box-shadow: 0 0.35rem 1.2rem rgb(37 54 91 / 7%);
+}
+
+.course-card:hover,
+.material-card:hover {
+  border-color: #aebde9;
+  transform: translateY(-2px);
+}
+
+.course-card,
+.material-card {
+  transition: transform 160ms ease, border-color 160ms ease;
+}
+
+.back-link {
+  color: #526176;
+  text-decoration: none;
+}

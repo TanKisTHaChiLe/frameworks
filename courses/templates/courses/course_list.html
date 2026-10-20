@@ -1,0 +1,17 @@
+{% extends "homepage/base.html" %}
+
+{% block title %}Курсы{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-end mb-4">
+  <div><p class="eyebrow">Каталог</p><h1 class="mb-0">Курсы</h1></div>
+  <span class="text-secondary">Всего: {{ courses|length }}</span>
+</div>
+<div class="row g-3">
+  {% for course in courses %}
+    {% include "courses/includes/course_card.html" %}
+  {% empty %}
+    <p>Курсы пока не добавлены.</p>
+  {% endfor %}
+</div>
+{% endblock %}

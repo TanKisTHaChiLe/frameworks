@@ -1,0 +1,35 @@
+{% extends "homepage/base.html" %}
+
+{% block title %}{{ course.name }}{% endblock %}
+
+{% block content %}
+<a class="back-link" href="{% url 'courses:list' %}">← Все курсы</a>
+<div class="d-flex align-items-center gap-3 mt-3 mb-4">
+  <h1 class="mb-0">{{ course.name }}</h1>
+  <span class="badge {% if course.is_active %}text-bg-success{% else %}text-bg-secondary{% endif %}">
+    {% if course.is_active %}активен{% else %}завершён{% endif %}
+  </span>
+</div>
+<div class="row g-4">
+  <section class="col-lg-7">
+    <h2>Материалы</h2>
+    <div class="list-group">
+      {% for material in course.materials %}
+      <a class="list-group-item list-group-item-action" href="{% url 'materials:detail' material.id %}">
+        {{ material.title|truncatechars:60 }}
+      </a>
+      {% empty %}<p>Материалов пока нет.</p>{% endfor %}
+    </div>
+  </section>
+  <section class="col-lg-5">
+    <h2>Студенты</h2>
+    <ul class="list-group">
+      {% for student in course.students %}
+      <li class="list-group-item d-flex justify-content-between">
+        {{ student.name }} <span>{{ student.study_year }}-й год</span>
+      </li>
+      {% empty %}<li class="list-group-item">Студентов пока нет.</li>{% endfor %}
+    </ul>
+  </section>
+</div>
+{% endblock %}

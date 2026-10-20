@@ -1,29 +1,62 @@
-"""Страницы материалов на данных JSON из ПР3."""
+"""Страницы и параметризованный поиск материалов в SQLite."""
 
-from django.conf import settings
 from django.shortcuts import render
 
-from models.materials import find_material_by_id
-from storage import load_courses, load_materials
+from db.database import fetch_all, fetch_one
 
 
-def _load_materials():
-    courses = load_courses(settings.BASE_DIR / "data" / "courses.json")
-    return load_materials(
-        settings.BASE_DIR / "data" / "materials.json", courses,
-    )
+CATEGORY_LABEL_SQL = """
+CASE materials.category
+    WHEN 'lecture' THEN 'Лекция'
+    WHEN 'practice' THEN 'Практическое задание'
+    WHEN 'exam' THEN 'Подготовка к экзамену'
+END
+"""
 
 
 def material_list(request):
+    query = request.GET.get("q", "").strip()
+    category = request.GET.get("category", "").strip()
+    conditions = ["1 = 1"]
+    parameters = []
+    if query:
+        conditions.append("LOWER(materials.title) LIKE LOWER(?)")
+        parameters.append(f"%{query}%")
+    if category in {"lecture", "practice", "exam"}:
+        conditions.append("materials.category = ?")
+        parameters.append(category)
+    sql = f"""
+        SELECT materials.id, materials.title, materials.category,
+               materials.publication_year, materials.is_published,
+               materials.min_study_year, courses.name AS course_name,
+               {CATEGORY_LABEL_SQL} AS category_label
+        FROM materials
+        JOIN courses ON materials.course_id = courses.id
+        WHERE {' AND '.join(conditions)}
+        ORDER BY materials.publication_year DESC, materials.title
+    """
     return render(
         request,
         "materials/material_list.html",
-        {"materials": _load_materials()},
+        {
+            "materials": fetch_all(sql, parameters),
+            "query": query,
+            "selected_category": category,
+        },
     )
 
 
 def material_detail(request, material_id):
-    material = find_material_by_id(_load_materials(), material_id)
+    material = fetch_one(
+        f"""
+        SELECT materials.*, courses.name AS course_name,
+               {CATEGORY_LABEL_SQL} AS category_label
+        FROM materials
+        JOIN courses ON materials.course_id = courses.id
+        WHERE materials.id = ?
+        """,
+        [material_id],
+    )
     if material is None:
         return render(
             request,

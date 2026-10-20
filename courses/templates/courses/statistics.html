@@ -1,0 +1,41 @@
+{% extends "homepage/base.html" %}
+
+{% block title %}Статистика{% endblock %}
+
+{% block content %}
+<p class="eyebrow">SQLite · GROUP BY</p>
+<h1>Статистика курсов</h1>
+<form class="card card-body my-4" method="get">
+  <div class="row align-items-end g-3">
+    <div class="col-sm-8">
+      <label class="form-label" for="minimum">Минимум материалов на курсе</label>
+      <input
+        class="form-control" id="minimum" name="minimum" type="number"
+        min="0" value="{{ minimum }}"
+      >
+    </div>
+    <div class="col-sm-4">
+      <button class="btn btn-primary w-100">Применить</button>
+    </div>
+  </div>
+</form>
+<div class="table-responsive">
+  <table class="table table-striped align-middle">
+    <thead>
+      <tr><th>Курс</th><th>Материалы</th><th>Опубликовано</th><th>Студенты</th></tr>
+    </thead>
+    <tbody>
+      {% for item in statistics %}
+      <tr>
+        <td><a href="{% url 'courses:detail' item.id %}">{{ item.name }}</a></td>
+        <td>{{ item.materials_count }}</td>
+        <td>{{ item.published_count }}</td>
+        <td>{{ item.students_count }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4">Подходящих курсов нет.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

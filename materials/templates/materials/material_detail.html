@@ -9,8 +9,8 @@
     {% include "materials/includes/status_badge.html" %}
     <h1 class="mt-3">{{ material.title }}</h1>
     <dl class="row mb-0">
-      <dt class="col-sm-4">Курс</dt><dd class="col-sm-8">{{ material.course.name }}</dd>
-      <dt class="col-sm-4">Категория</dt><dd class="col-sm-8">{{ material.category.label }}</dd>
+      <dt class="col-sm-4">Курс</dt><dd class="col-sm-8">{{ material.course_name }}</dd>
+      <dt class="col-sm-4">Категория</dt><dd class="col-sm-8">{{ material.category_label }}</dd>
       <dt class="col-sm-4">Год публикации</dt><dd class="col-sm-8">{{ material.publication_year }}</dd>
       <dt class="col-sm-4">Доступ с</dt><dd class="col-sm-8">{{ material.min_study_year }}-го года обучения</dd>
     </dl>

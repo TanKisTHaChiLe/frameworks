@@ -7,6 +7,26 @@
   <div><p class="eyebrow">Библиотека</p><h1 class="mb-0">Учебные материалы</h1></div>
   <span class="text-secondary">Всего: {{ materials|length }}</span>
 </div>
+<form class="card card-body mb-4" method="get">
+  <div class="row g-3 align-items-end">
+    <div class="col-md-6">
+      <label class="form-label" for="query">Название</label>
+      <input class="form-control" id="query" name="q" value="{{ query }}">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label" for="category">Категория</label>
+      <select class="form-select" id="category" name="category">
+        <option value="">Все категории</option>
+        <option value="lecture" {% if selected_category == "lecture" %}selected{% endif %}>Лекции</option>
+        <option value="practice" {% if selected_category == "practice" %}selected{% endif %}>Практика</option>
+        <option value="exam" {% if selected_category == "exam" %}selected{% endif %}>Экзамен</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <button class="btn btn-primary w-100">Найти</button>
+    </div>
+  </div>
+</form>
 <div class="row g-3">
   {% for material in materials %}
     {% include "materials/includes/material_card.html" %}

@@ -14,7 +14,7 @@
   <section class="col-lg-7">
     <h2>Материалы</h2>
     <div class="list-group">
-      {% for material in course.materials %}
+      {% for material in materials %}
       <a class="list-group-item list-group-item-action" href="{% url 'materials:detail' material.id %}">
         {{ material.title|truncatechars:60 }}
       </a>
@@ -24,7 +24,7 @@
   <section class="col-lg-5">
     <h2>Студенты</h2>
     <ul class="list-group">
-      {% for student in course.students %}
+      {% for student in students %}
       <li class="list-group-item d-flex justify-content-between">
         {{ student.name }} <span>{{ student.study_year }}-й год</span>
       </li>

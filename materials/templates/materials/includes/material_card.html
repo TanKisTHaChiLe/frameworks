@@ -2,9 +2,9 @@
   <article class="card h-100 material-card">
     <div class="card-body">
       {% include "materials/includes/status_badge.html" %}
-      <p class="eyebrow mt-3 mb-1">{{ material.category.label }}</p>
+      <p class="eyebrow mt-3 mb-1">{{ material.category_label }}</p>
       <h2 class="h5">{{ material.title|truncatechars:72 }}</h2>
-      <p class="text-secondary">{{ material.course.name }}</p>
+      <p class="text-secondary">{{ material.course_name }}</p>
       <a class="stretched-link" href="{% url 'materials:detail' material.id %}">
         Подробнее
       </a>

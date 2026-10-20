@@ -14,7 +14,7 @@ django.setup()
 
 def test_main_pages_are_available():
     client = Client()
-    for url in ("/", "/courses/", "/materials/"):
+    for url in ("/", "/courses/", "/materials/", "/courses/statistics/"):
         assert client.get(url).status_code == 200
 
 
@@ -36,3 +36,16 @@ def test_named_routes_and_static_files_are_configured():
     assert reverse("materials:list") == "/materials/"
     assert finders.find("css/style.css") is not None
     assert finders.find("js/main.js") is not None
+
+
+def test_material_search_and_statistics_use_sqlite():
+    client = Client()
+    response = client.get("/materials/", {"q": "Python", "category": "exam"})
+    content = response.content.decode()
+    assert "Подготовка к экзамену по Python" in content
+    assert "Основы Python" not in content
+
+    response = client.get("/courses/statistics/", {"minimum": 2})
+    content = response.content.decode()
+    assert "Программирование на Python" in content
+    assert "Алгоритмы и структуры данных" not in content

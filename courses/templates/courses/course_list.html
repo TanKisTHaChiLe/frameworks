@@ -9,7 +9,7 @@
 </div>
 <div class="row g-3">
   {% for course in courses %}
-    {% include "courses/includes/course_card.html" %}
+    {% include "courses/includes/course_card.html" with card_course=course only %}
   {% empty %}
     <p>Курсы пока не добавлены.</p>
   {% endfor %}

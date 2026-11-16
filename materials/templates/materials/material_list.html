@@ -5,12 +5,12 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-end mb-4">
   <div><p class="eyebrow">Библиотека</p><h1 class="mb-0">Учебные материалы</h1></div>
-  <span class="text-secondary">Всего: {{ materials|length }}</span>
+  <span class="text-secondary">Всего: {{ page_obj.paginator.count }}</span>
 </div>
 <form class="card card-body mb-4" method="get">
   <div class="row g-3 align-items-end">
     <div class="col-md-6">
-      <label class="form-label" for="query">Название</label>
+      <label class="form-label" for="query">Название материала или курса</label>
       <input class="form-control" id="query" name="q" value="{{ query }}">
     </div>
     <div class="col-md-4">
@@ -22,16 +22,35 @@
         <option value="exam" {% if selected_category == "exam" %}selected{% endif %}>Экзамен</option>
       </select>
     </div>
+    <div class="col-md-4">
+      <label class="form-label" for="sort">Сортировка</label>
+      <select class="form-select" id="sort" name="sort">
+        <option value="recent" {% if sort == "recent" %}selected{% endif %}>Сначала новые</option>
+        <option value="title" {% if sort == "title" %}selected{% endif %}>По названию</option>
+        <option value="course" {% if sort == "course" %}selected{% endif %}>По курсу</option>
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label><input type="checkbox" name="published" value="1" {% if published %}checked{% endif %}>
+        Только опубликованные</label>
+    </div>
     <div class="col-md-2">
       <button class="btn btn-primary w-100">Найти</button>
     </div>
   </div>
 </form>
 <div class="row g-3">
-  {% for material in materials %}
+  {% for material in page_obj %}
     {% include "materials/includes/material_card.html" %}
   {% empty %}
-    <p>Материалы пока не добавлены.</p>
+    <p>Материалы не найдены.</p>
   {% endfor %}
 </div>
+{% if page_obj.has_other_pages %}
+<nav aria-label="Страницы материалов" class="my-4">
+  {% if page_obj.has_previous %}<a href="{% querystring page=page_obj.previous_page_number %}">Назад</a>{% endif %}
+  <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+  {% if page_obj.has_next %}<a href="{% querystring page=page_obj.next_page_number %}">Далее</a>{% endif %}
+</nav>
+{% endif %}
 {% endblock %}

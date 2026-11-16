@@ -1,5 +1,6 @@
 """Настройки Django-проекта."""
 
+import os
 from pathlib import Path
 
 
@@ -65,3 +66,10 @@ USE_I18N = True
 USE_TZ = True
 STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Панель SQL включается только для локальной демонстрации.
+ENABLE_DEBUG_TOOLBAR = DEBUG and os.environ.get("DJANGO_DEBUG_TOOLBAR") == "1"
+if ENABLE_DEBUG_TOOLBAR:
+    INSTALLED_APPS.append("debug_toolbar")
+    MIDDLEWARE.insert(1, "debug_toolbar.middleware.DebugToolbarMiddleware")
+    INTERNAL_IPS = ["127.0.0.1", "::1"]

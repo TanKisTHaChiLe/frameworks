@@ -7,11 +7,16 @@
   <div><p class="eyebrow">Каталог</p><h1 class="mb-0">Курсы</h1></div>
   <span class="text-secondary">Всего: {{ courses|length }}</span>
 </div>
+<form class="mb-4" method="get">
+  <label for="course-query">Название курса</label>
+  <input id="course-query" name="q" value="{{ query }}">
+  <button class="btn btn-primary">Найти</button>
+</form>
 <div class="row g-3">
   {% for course in courses %}
     {% include "courses/includes/course_card.html" with card_course=course only %}
   {% empty %}
-    <p>Курсы пока не добавлены.</p>
+    <p>Курсы не найдены.</p>
   {% endfor %}
 </div>
 {% endblock %}

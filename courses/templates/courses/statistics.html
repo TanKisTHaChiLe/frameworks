@@ -3,8 +3,9 @@
 {% block title %}Статистика{% endblock %}
 
 {% block content %}
-<p class="eyebrow">SQLite · GROUP BY</p>
+
 <h1>Статистика курсов</h1>
+<p>Во всей библиотеке {{ totals.total }} материалов, из них опубликовано {{ totals.published }}.</p>
 <form class="card card-body my-4" method="get">
   <div class="row align-items-end g-3">
     <div class="col-sm-8">

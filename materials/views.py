@@ -1,71 +1,47 @@
-"""Страницы и параметризованный поиск материалов в SQLite."""
-
+from django.core.paginator import Paginator
+from django.db.models import Q
 from django.shortcuts import render
 
-from db.database import fetch_all, fetch_one
+from .models import Material
 
 
-CATEGORY_LABEL_SQL = """
-CASE materials.category
-    WHEN 'lecture' THEN 'Лекция'
-    WHEN 'practice' THEN 'Практическое задание'
-    WHEN 'exam' THEN 'Подготовка к экзамену'
-END
-"""
+SORTS = {
+    "recent": ("-publication_year", "title", "id"),
+    "title": ("title", "id"),
+    "course": ("course__name", "title", "id"),
+}
 
 
 def material_list(request):
     query = request.GET.get("q", "").strip()
-    category = request.GET.get("category", "").strip()
-    conditions = ["1 = 1"]
-    parameters = []
+    category = request.GET.get("category", "")
+    sort = request.GET.get("sort", "recent")
+    if sort not in SORTS:
+        sort = "recent"
+    published = request.GET.get("published") == "1"
+    materials = Material.objects.select_related("course")
     if query:
-        conditions.append("LOWER(materials.title) LIKE LOWER(?)")
-        parameters.append(f"%{query}%")
-    if category in {"lecture", "practice", "exam"}:
-        conditions.append("materials.category = ?")
-        parameters.append(category)
-    sql = f"""
-        SELECT materials.id, materials.title, materials.category,
-               materials.publication_year, materials.is_published,
-               materials.min_study_year, courses.name AS course_name,
-               {CATEGORY_LABEL_SQL} AS category_label
-        FROM materials
-        JOIN courses ON materials.course_id = courses.id
-        WHERE {' AND '.join(conditions)}
-        ORDER BY materials.publication_year DESC, materials.title
-    """
-    return render(
-        request,
-        "materials/material_list.html",
-        {
-            "materials": fetch_all(sql, parameters),
-            "query": query,
-            "selected_category": category,
-        },
+        materials = materials.filter(
+            Q(title__icontains=query) | Q(course__name__icontains=query),
+        )
+    if category in Material.Category.values:
+        materials = materials.filter(category=category)
+    if published:
+        materials = materials.exclude(is_published=False)
+    page = Paginator(materials.order_by(*SORTS[sort]), 2).get_page(
+        request.GET.get("page"),
     )
+    return render(request, "materials/material_list.html", {
+        "page_obj": page, "query": query, "selected_category": category,
+        "sort": sort, "published": published,
+    })
 
 
 def material_detail(request, material_id):
-    material = fetch_one(
-        f"""
-        SELECT materials.*, courses.name AS course_name,
-               {CATEGORY_LABEL_SQL} AS category_label
-        FROM materials
-        JOIN courses ON materials.course_id = courses.id
-        WHERE materials.id = ?
-        """,
-        [material_id],
-    )
-    if material is None:
+    try:
+        material = Material.objects.select_related("course").get(pk=material_id)
+    except Material.DoesNotExist:
         return render(
-            request,
-            "homepage/404.html",
-            {"object_name": "Материал"},
-            status=404,
+            request, "homepage/404.html", {"object_name": "Материал"}, status=404,
         )
-    return render(
-        request,
-        "materials/material_detail.html",
-        {"material": material},
-    )
+    return render(request, "materials/material_detail.html", {"material": material})
